@@ -8,6 +8,6 @@ package com.ehi.buildsrc
  */
 class Config {
     companion object {
-        const val kotlin_version = "1.3.50"
+        const val kotlin_version = "1.6.10"
     }
 }
