@@ -12,6 +12,7 @@ import org.gradle.api.DefaultTask
 import org.gradle.api.artifacts.component.ModuleComponentIdentifier
 import org.gradle.api.artifacts.component.ProjectComponentIdentifier
 import org.gradle.api.artifacts.result.ResolvedArtifactResult
+import org.gradle.api.tasks.Internal
 import org.gradle.api.tasks.TaskAction
 import org.gradle.internal.component.local.model.OpaqueComponentArtifactIdentifier
 import java.util.regex.Pattern
@@ -25,7 +26,7 @@ import java.util.regex.Pattern
  * Output: projectDir/permissions.json
  */
 internal open class ListPermissionTask : DefaultTask() {
-
+    @Internal
     lateinit var variant: BaseVariant
 
     @TaskAction
@@ -48,8 +49,9 @@ internal open class ListPermissionTask : DefaultTask() {
             getAppModulePermission(map)
         } else {
             val manifest = checkManifestTask.fakeOutputDir.asFile.get()
-            if (manifest.exists()) {
+            if (manifest.exists() && manifest.isFile) {
                 map["app"] = matchPermission(manifest.readText())
+                println("map[\"app\"]" + manifest.readText())
             } else {
                 println("App manifest is missing for variant ${variant.name}, Expected path: ${manifest.absolutePath}")
                 getAppModulePermission(map)
@@ -58,7 +60,7 @@ internal open class ListPermissionTask : DefaultTask() {
 
         val component = BaseVariantImpl::class.java.getDeclaredField("component").apply {
             isAccessible = true
-        }.get(this) as ComponentImpl
+        }.get(variant) as ComponentImpl
         // 获取 app 依赖的 aar 权限
         val manifests = component.variantDependencies.getArtifactCollection(
             AndroidArtifacts.ConsumedConfigType.RUNTIME_CLASSPATH,
@@ -81,6 +83,7 @@ internal open class ListPermissionTask : DefaultTask() {
         val file = project.projectDir.resolve("src/main/AndroidManifest.xml")
         if (file.exists()) {
             map["app"] = matchPermission(file.readText())
+            println("getAppModulePermission " + map["app"])
         } else {
             println("App manifest is missing for path ${file.absolutePath}")
         }
