@@ -1,9 +1,9 @@
 package com.ehi.plugin.task
 
 import com.android.build.gradle.api.BaseVariant
-import com.android.build.gradle.internal.api.ApplicationVariantImpl
 import com.ehi.plugin.spi.VariantProcessor
 import com.google.auto.service.AutoService
+import org.gradle.api.Project
 
 /**
  * Author: Omooo
@@ -15,10 +15,8 @@ import com.google.auto.service.AutoService
 @AutoService(VariantProcessor::class)
 class Convert2WebpVariantProcessor : VariantProcessor {
 
-    override fun process(variant: BaseVariant) {
-
-        val variantData = (variant as ApplicationVariantImpl).variantData
-        val tasks = variantData.scope.globalScope.project.tasks
+    override fun process(project: Project, variant:BaseVariant) {
+        val tasks = project.tasks
         val convert2WebpTask = tasks.findByName("convert2Webp") ?: tasks.create(
             "convert2Webp",
             Convert2WebpTask::class.java

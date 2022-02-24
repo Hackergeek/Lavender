@@ -4,10 +4,10 @@ apply plugin: 'kotlin-android'
 
 apply plugin: 'kotlin-android-extensions'
 
-//apply plugin: 'com.ehi.plugin'
-//convert2WebpConfig{
-//    enableWhenDebug true
-//}
+apply plugin: 'com.ehi.plugin'
+convert2WebpConfig{
+    enableWhenDebug true
+}
 
 android {
     compileSdkVersion 32

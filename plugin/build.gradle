@@ -12,8 +12,8 @@ dependencies {
 
     kapt "com.google.auto.service:auto-service:1.0-rc4"
     implementation "com.google.auto.service:auto-service:1.0-rc4"
-    compileOnly "com.android.tools.build:gradle:4.0.1"
-    testCompileOnly "com.android.tools.build:gradle:4.0.1"
+    compileOnly "com.android.tools.build:gradle:7.1.1"
+    testCompileOnly "com.android.tools.build:gradle:7.1.1"
 }
 
 sourceCompatibility = "8"
@@ -31,10 +31,6 @@ sourceSets {
 
         kotlin {
             srcDir '../plugin/src/main/kotlin'
-        }
-
-        resources {
-            srcDir '../plugin/src/main/resources'
         }
     }
 }

@@ -8,6 +8,7 @@ import com.ehi.plugin.ext.Convert2WebpExtension
 import com.ehi.plugin.util.ImageUtil
 import org.gradle.api.DefaultTask
 import org.gradle.api.GradleException
+import org.gradle.api.tasks.Internal
 import org.gradle.api.tasks.TaskAction
 import java.io.File
 import java.util.concurrent.Callable
@@ -18,6 +19,7 @@ internal open class Convert2WebpTask : DefaultTask() {
 
     private lateinit var config: Convert2WebpExtension
 
+    @Internal
     var bigImageList = ArrayList<String>()
 
     private var oldSize = 0L

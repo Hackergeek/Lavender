@@ -1,19 +1,19 @@
 package com.ehi.plugin.task
 
+import com.android.build.api.component.impl.ComponentImpl
 import com.android.build.gradle.api.BaseVariant
 import com.android.build.gradle.internal.api.ApplicationVariantImpl
+import com.android.build.gradle.internal.api.BaseVariantImpl
 import com.android.build.gradle.internal.dependency.ArtifactCollectionWithExtraArtifact
 import com.android.build.gradle.internal.publishing.AndroidArtifacts
 import com.android.build.gradle.internal.tasks.CheckManifest
 import com.ehi.plugin.util.writeToJson
-import groovy.json.JsonOutput
 import org.gradle.api.DefaultTask
 import org.gradle.api.artifacts.component.ModuleComponentIdentifier
 import org.gradle.api.artifacts.component.ProjectComponentIdentifier
 import org.gradle.api.artifacts.result.ResolvedArtifactResult
 import org.gradle.api.tasks.TaskAction
 import org.gradle.internal.component.local.model.OpaqueComponentArtifactIdentifier
-import java.io.File
 import java.util.regex.Pattern
 
 /**
@@ -56,14 +56,15 @@ internal open class ListPermissionTask : DefaultTask() {
             }
         }
 
+        val component = BaseVariantImpl::class.java.getDeclaredField("component").apply {
+            isAccessible = true
+        }.get(this) as ComponentImpl
         // 获取 app 依赖的 aar 权限
-        val variantData = (variant as ApplicationVariantImpl).variantData
-        val manifests = variantData.scope.getArtifactCollection(
+        val manifests = component.variantDependencies.getArtifactCollection(
             AndroidArtifacts.ConsumedConfigType.RUNTIME_CLASSPATH,
             AndroidArtifacts.ArtifactScope.ALL,
             AndroidArtifacts.ArtifactType.MANIFEST
         )
-
         val artifacts = manifests.artifacts
         for (artifact in artifacts) {
             if (!map.containsKey(getArtifactName(artifact))
@@ -76,7 +77,7 @@ internal open class ListPermissionTask : DefaultTask() {
         map.writeToJson("${project.parent?.projectDir}/permissions.json")
     }
 
-    private fun getAppModulePermission(map: HashMap<String, List<String>>){
+    private fun getAppModulePermission(map: HashMap<String, List<String>>) {
         val file = project.projectDir.resolve("src/main/AndroidManifest.xml")
         if (file.exists()) {
             map["app"] = matchPermission(file.readText())

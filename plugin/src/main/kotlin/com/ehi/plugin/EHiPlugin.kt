@@ -27,7 +27,6 @@ class EHiPlugin : Plugin<Project> {
 
         // Extension
         project.extensions.create("convert2WebpConfig", Convert2WebpExtension::class.java)
-
         when {
             project.plugins.hasPlugin("com.android.application") -> project.extensions.getByType(
                 AppExtension::class.java
@@ -37,7 +36,7 @@ class EHiPlugin : Plugin<Project> {
                         .toList().let { processes ->
                             android.applicationVariants.forEach { variant ->
                                 processes.forEach {
-                                    it.process(variant)
+                                    it.process(project, variant)
                                 }
                             }
                         }
@@ -52,11 +51,10 @@ class EHiPlugin : Plugin<Project> {
                         .toList().let { processes ->
                             android.libraryVariants.forEach { variant ->
                                 processes.forEach {
-                                    it.process(variant)
+                                    it.process(project, variant)
                                 }
                             }
                         }
-
                 }
             }
         }
